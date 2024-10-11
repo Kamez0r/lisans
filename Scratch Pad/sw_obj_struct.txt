@@ -1,0 +1,140 @@
+
+
+Class Angle() {
+private:
+    double _angle
+
+public:
+    Angle(double)
+    Angle(double,double,double)
+
+    void setAngle(double)
+    double getAngle()
+
+    void setDEC(double) // Alias for setAngle
+    double getDEC() // Alias for getAngle
+
+    void setDMS(double, double, double)
+    double getDMS() // Returns self
+    int degrees() // Returns degrees (double)
+    unsigned int minutes() // Returns minutes (double)
+    double seconds() //Returns seconds (double)
+}
+
+Class Coordinate() {
+private:
+    Angle latitude
+    Angle longitude
+
+public:
+    Coordinate(Angle, Angle)
+    Coordinate(double, double) // From DEC
+    Coordinate(double, double, double, double, double, double) // From DMS
+    Coordinate(double, Angle) // From DEC + Angle
+    Coordinate(Angle, double) // From Angle + DEC
+    Coordinate(double, double, double, Angle) // From DMS + Angle
+    Coordinate(Angle,double, double, double) // From Angle + DMS
+
+    void setLatitude(Angle)
+    void setLatitude(double) // Inits Angle from DEC and calls above
+    void setLatitude(double,double,double) // Inits Angle from DMS and calls above
+
+    Angle getLatitude()
+    Angle latitude() // Alias for getLatitude
+
+    void setLongitude(Angle)
+    void setLongitude(double) // Inits Angle from DEC and calls above
+    void setLongitude(double,double,double) // Inits Angle from DMS and calls above
+    Angle getLongitude()
+    Angle longitude() // Alias for getLongiAngle
+
+}
+
+
+ADSBTarget() {
+private: // Should further investigate ADSB message assignment sizes / Could assign type based on that
+
+    // 6 pozitii hexazecimale deci 3 octeti deci 24 biti, deci poate fi reprezentat cu uint24_t (less portable) / uint32_t (more portable)
+    // Transponder Identifier
+    uint32_t _hex 
+    
+    string _flight // Callsign usually sequence of 6 chars but could vary
+    string _r // Registration/Tail Number usually sequence of 5 chars including a dash (like YR-16B or N-737W) but could vary - Dash separates registration country
+    string _t // Aircraft Type usually a sequence of 4 chars representing ICAO aircraft type (like A321 B738 A21N A225 etc...)
+    
+
+    // 66000ft is the the upper limit of controlled airspace in Romania (and many other countries)
+    // 66000ft requires 17 bit to represent
+    // More regular altitudes like 32000ft can be represented with 16(even 14 bits)
+    // Taking that into consideration i decided to assign 32bits again (BUT SIGNED) for the altitude
+    // even though 16bits suffice for regular altitudes (unsigned)
+    // I think we should add compatiblity for negative altitudes (see Netherlands)
+    // And altitudes above maximum controlled airspace.
+    int32_t _alt_baro 
+    int32_t _alt_geom
+
+
+    // Arriving the at the speed,
+    // The speed of light (considering it is the maximum speed in the universe)
+    // Can be represented as 5.8-5.9 billion knots, that is 33 binary (unisgned or signed requiring 64bit)
+    // Although it sometimes comes as an integer, i would rather save them as double precision floating point
+    // That is, 
+    double _gs // Ground speed: Comes as as double
+    double _ias // Indicated Airspeed: Comes as uint
+    double _tas // True Airspeed: comes as uint
+    double _mach // Mach Speed: Comes as double (percent of speed of sound  speed_of_aircraft/barrier_speed_of_sound = usually 0-1 could be greater than 1)
+
+    double _track // [TBC] Seems to be the heading of the aircraft based on historical data (ie aircraft might be facing a certain heading but the line it traces on a map si a different heading, that is the track)
+    double _track_rate // [TBC] Seems to be the rate of change of track per second?? / per sample?? / ???
+
+    double _roll // [TBC] Seems to be the angle of the wings with the horizon / ie -10.5 = 10 Degrees + 30 Minutes of bank angle to the left
+    double _mag_heading // Magnetic Heading / Heading based on Magnetic North
+    double _true_heading // True Heading / Heading based on True North
+
+    // The squawk code is a 4 digit octal number representing a number assigned by ATC
+    // To uniquely identify the airplane withing a certain range.
+    // SQK Code stnads at the fundamnetal of SSD (See Mode A and C transponders)
+    // Is old analogue of our hex id
+    // Is received from API as string but could be represented as 16 bit (uint16_t)
+    string _squawk // Squawk Code
+
+    double _nav_qnh // [TBC] QNH value put into altimeter used for Modes S transponder ?? Seems to be in hPa/mBar(1012.8) / Check USA for inHg ?? 29.92
+    int32_t _nav_altitude_mcp // [TBC] See explaination above about altitude; Seems to be altitude set into MCP based on QNH correction or smth????
+
+    double _lat // [TBC] seems to be signed decimal latitude angle (+ for NORTH - for SOUTH)
+    double _lon // [TBC] seems to be signed decimal longitude angle (+ for EAST - for WEST)
+
+    // Bellow are values that seem interesting but i think can not be used in the project
+    _type // Like "adsb_icao"
+    _baro_rate // Like 64
+    _geo_rate // Like 64
+    _emergency // Like "none"
+    _category  // Like "A3"
+    _messages // Like 93537072
+
+    // Bellow are values that seemed to be not of interest:
+    _wd // Like 268
+    _ws // Like 71
+    _oat // Like -55
+    _tat // Like -29
+    _nic // Like 8
+    _rc // Like 186
+    _version // Like 2
+    _nic_baro // Like 1
+    _nac_p // Like 8
+    _nac_v // Like 1
+    _sil // Like 3
+    _sil_type // Like "perhour"
+    _gva // Like 1
+    _sda // Like 2
+    _alert // Like 0
+    _spi // Like 0
+    _mlat // Like []
+    _tisb // Like []
+    _seen // Like 0.0
+    _rssi // Like -10.0
+
+
+}
+
+class RadarTarget(){}
