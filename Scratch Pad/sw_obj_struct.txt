@@ -106,6 +106,9 @@ private: // Should further investigate ADSB message assignment sizes / Could ass
 
     // Interesting data but not available on all APIS
     _nav_heading // Only adsb.lol
+    _desc // Like "AIRBUS A-321neo" Only on adsb.fi
+    _recentReceiverIds // Like [String, String] / Could be relayed messages? Found on adsb.fi
+
 
     // Bellow are values that seem interesting but i think can not be used in the project
     _type // Like "adsb_icao"
@@ -123,6 +126,7 @@ private: // Should further investigate ADSB message assignment sizes / Could ass
     _nic // Like 8
     _rc // Like 186
     _version // Like 2
+    _seen_pos // Like 0.248
     _nic_baro // Like 1
     _nac_p // Like 8
     _nac_v // Like 1
