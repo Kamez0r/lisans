@@ -104,6 +104,9 @@ private: // Should further investigate ADSB message assignment sizes / Could ass
     double _lat // [TBC] seems to be signed decimal latitude angle (+ for NORTH - for SOUTH)
     double _lon // [TBC] seems to be signed decimal longitude angle (+ for EAST - for WEST)
 
+    // Interesting data but not available on all APIS
+    _nav_heading // Only adsb.lol
+
     // Bellow are values that seem interesting but i think can not be used in the project
     _type // Like "adsb_icao"
     _baro_rate // Like 64
